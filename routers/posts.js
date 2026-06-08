@@ -7,7 +7,10 @@ router.get('/', (req, res) => {
     const tag = req.query.tag;
 
     if (tag) {
-        const filteredPosts = posts.filter(post => post.tags.includes(tag));
+
+        const filteredPosts = posts.filter(post =>
+            post.tags.map(tag => tag.toLowerCase()).includes(tag.toLowerCase())
+        );
         return res.json(filteredPosts);
     }
     res.json(posts);
@@ -16,9 +19,9 @@ router.get('/', (req, res) => {
 // SHOW
 router.get('/:id', (req, res) => {
     const postId = parseInt(req.params.id);
-    const post = posts.find(p => p.id === postId);
+    const thisPost = posts.find(post => post.id === postId);
 
-    if (!post) {
+    if (!thisPost) {
         return res.status(404).json({ error: true, message: 'Post not found' });
     }
 
