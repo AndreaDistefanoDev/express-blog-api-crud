@@ -4,10 +4,26 @@ const posts = require('../data/posts');
 
 // INDEX
 router.get('/', (req, res) => {
+    const tag = req.query.tag;
+
+    if (tag) {
+        const filteredPosts = posts.filter(post => post.tags.includes(tag));
+        return res.json(filteredPosts);
+    }
     res.json(posts);
 });
 
+// SHOW
+router.get('/:id', (req, res) => {
+    const postId = parseInt(req.params.id);
+    const post = posts.find(p => p.id === postId);
 
+    if (!post) {
+        return res.status(404).json({ error: true, message: 'Post not found' });
+    }
+
+    res.json(post);
+});
 
 
 
