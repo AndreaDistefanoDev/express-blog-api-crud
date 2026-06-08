@@ -1,66 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const posts = require('../data/posts');
+const postController = require('../controllers/postController');
 
 // INDEX
-router.get('/', (req, res) => {
-    const tag = req.query.tag;
-
-    if (tag) {
-
-        const filteredPosts = posts.filter(post =>
-            post.tags.map(tag => tag.toLowerCase()).includes(tag.toLowerCase())
-        );
-        return res.json(filteredPosts);
-    }
-    res.json(posts);
-});
+router.get('/', postController.index);
 
 // SHOW
-router.get('/:id', (req, res) => {
-    const postId = parseInt(req.params.id);
-    const thisPost = posts.find(post => post.id === postId);
-
-    if (!thisPost) {
-        return res.status(404).json({ error: true, message: 'Post not found' });
-    }
-
-    res.json(post);
-});
+router.get('/:id', postController.show);
 
 // STORE
-router.post('/', (req, res) => {
-    const { title, content, tags } = req.body;
-    const newPost = {
-        id: posts.length + 1,
-        title,
-        content,
-        tags
-    };
-    posts.push(newPost);
-    res.status(201).json(newPost);
-});
+router.post('/', postController.store);
+
 
 // UPDATE
-router.put('/:id', (req, res) => { });
+router.put('/:id', postController.update);
 
-// PATCH
-router.patch('/:id', (req, res) => { });
+// MODIFY
+router.patch('/:id', postController.modify);
 
-// DELETE
-router.delete('/:id', (req, res) => {
-
-    const postId = parseInt(req.params.id);
-    const thisPost = posts.find(post => post.id === postId);
-
-    if (!thisPost) {
-        return res.status(404).json({ error: true, message: 'Post not found' });
-    }
-
-    const postIndex = posts.indexOf(thisPost);
-    posts.splice(postIndex, 1);
-    res.json({ message: 'Post deleted successfully' });
-});
-
+// DESTROY
+router.delete('/:id', postController.destroy);
 
 module.exports = router;
